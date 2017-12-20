@@ -137,6 +137,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </td>
                     <td>
                         <select name="oglocale">
+                            <option></option>
                             <?php
                             foreach ($locates as $locate) {
                                 $sel = ($settings['oglocale'] == $locate) ? 'selected' : '';
@@ -190,20 +191,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 </div>
 
 <?php
-
-//print_r(ResourceBundle::getLocales(''));
-
-//file_put_contents('/media/data/code/php/skansen/new1/wordpress/wp-content/cache/locates.json', json_encode(ResourceBundle::getLocales('')));
-
-//var_dump($locates);
-
-var_dump($settings);
-
-var_dump($_POST);
+//var_dump($settings);
+//var_dump($_POST);
 ?>
 
 <script>
-
     jQuery(document).ready(function($){
 
         jQuery('#goldTabNav a').click(function() {
@@ -213,5 +205,4 @@ var_dump($_POST);
             jQuery('#'+jQuery(this).data('show')).show();
         });
     });
-
 </script>

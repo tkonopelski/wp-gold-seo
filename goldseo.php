@@ -31,10 +31,16 @@ class GoldSeo {
 
     private $shortName='GoldSEO';
 
+    /**
+     * Plugin slug
+     * @var string
+     */
     private $plugin_slug = 'gold-seo';
 
-    private $description='';
-
+    /**
+     * Settings array
+     * @var array
+     */
     private $settings = array();
 
     /**
@@ -53,7 +59,7 @@ class GoldSeo {
             add_filter( "plugin_action_links_".plugin_basename( __FILE__ ), array($this, 'addSettingsLink') );
         } else {
             add_action( 'wp_head', array($this, 'setMeta'), 1 );
-            add_action('wp_footer', array($this, 'footerDebug'));
+            //add_action('wp_footer', array($this, 'footerDebug')); // FOR DEBUG ONLY
         }
 
     }
@@ -104,14 +110,28 @@ class GoldSeo {
         $description = trim(preg_replace('/\s+/', ' ', $description));
 
         if (strlen($description) > 2) {
-            echo "\n";
+            //echo "\n";
             echo '<meta name="description" content="'.(esc_attr( $description)).'" />';
-            echo "\n";
             echo "\n";
         }
 
         if (!isset($this->settings['ogtitle']) || $this->settings['ogtitle']==='yes') {
             echo '<meta property="og:title" content="'. get_the_title() .'" />';
+            echo "\n";
+        }
+
+        if (isset($this->settings['ogimage'][5])) {
+            echo '<meta property="og:image" content="'. trim($this->settings['ogimage']) .'" />';
+            echo "\n";
+        }
+
+        if (isset($this->settings['oglocale'][1])) {
+            echo '<meta property="og:locale" content="'. trim($this->settings['oglocale']) .'" />';
+            echo "\n";
+        }
+
+        if (isset($this->settings['ogtype'][1])) {
+            echo '<meta property="og:type" content="'. trim($this->settings['ogtype']) .'" />';
             echo "\n";
         }
 
@@ -123,16 +143,6 @@ class GoldSeo {
         if (!isset($this->settings['ogurl']) || $this->settings['ogurl']==='yes') {
             global $wp;
             echo '<meta property="og:url" content="'. home_url( $wp->request ) .'" />';
-            echo "\n";
-        }
-
-        if (isset($this->settings['oglocale'][1])) {
-            echo '<meta property="og:locale" content="'. trim($this->settings['oglocale']) .'" />';
-            echo "\n";
-        }
-
-        if (isset($this->settings['ogimage'][5])) {
-            echo '<meta property="og:image" content="'. trim($this->settings['ogimage']) .'" />';
             echo "\n";
         }
 
@@ -194,6 +204,7 @@ class GoldSeo {
             $save['oglocale'] = htmlspecialchars($_POST['oglocale']);
             $save['ogurl'] = htmlspecialchars($_POST['ogimage']);
             $save['ogimage'] = htmlspecialchars($_POST['ogimage']);
+            $save['ogtype'] = htmlspecialchars($_POST['ogtype']);
 
             $save = json_encode($save);
             update_option( $this->plugin_slug . '-settings', trim( $save ) );
