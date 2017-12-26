@@ -205,6 +205,7 @@ class GoldSeo {
             $save['ogurl'] = htmlspecialchars($_POST['ogimage']);
             $save['ogimage'] = htmlspecialchars($_POST['ogimage']);
             $save['ogtype'] = htmlspecialchars($_POST['ogtype']);
+            $save['metatags'] = htmlspecialchars($_POST['metatags']);
 
             $save = json_encode($save);
             update_option( $this->plugin_slug . '-settings', trim( $save ) );

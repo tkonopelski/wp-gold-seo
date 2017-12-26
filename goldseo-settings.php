@@ -64,6 +64,16 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </td>
                 </tr>
 
+
+                <tr>
+                    <td>
+                        Tags
+                    </td>
+                    <td>
+                        <textarea rows="3" cols="100" style="width: 99%" name="metatags"><?php echo esc_attr($settings['metatags']); ?></textarea>
+                    </td>
+                </tr>
+
                 <tr>
                     <td>
                         <b>The Open Graph</b> <small><a href="http://ogp.me/" target="_blank">docs</a></small>
