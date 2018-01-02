@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
             <table class="wp-list-table widefat pages form-table" cellspacing="0">
 
                 <tr>
-                    <td>
+                    <td width="20%">
                         <b>Meta  description tag settings</b>
                     </td>
                     <td>
@@ -67,7 +67,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
                 <tr>
                     <td>
-                        Tags
+                        <b>Keywords</b>
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td valign="top" style="vertical-align: top">
+                        Keywords contains words relevant to the page's content separated by commas
+
                     </td>
                     <td>
                         <textarea rows="3" cols="100" style="width: 99%" name="metatags"><?php echo esc_attr($settings['metatags']); ?></textarea>

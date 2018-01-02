@@ -115,6 +115,12 @@ class GoldSeo {
             echo "\n";
         }
 
+        # keywords
+        if (isset($this->settings['metatags']) && strlen($this->settings['metatags']) > 2) {
+            echo '<meta name="keywords" content="'. esc_attr($this->settings['metatags']) .'" />';
+            echo "\n";
+        }
+
         if (!isset($this->settings['ogtitle']) || $this->settings['ogtitle']==='yes') {
             echo '<meta property="og:title" content="'. get_the_title() .'" />';
             echo "\n";
@@ -145,7 +151,7 @@ class GoldSeo {
             echo '<meta property="og:url" content="'. home_url( $wp->request ) .'" />';
             echo "\n";
         }
-
+        //var_dump($this->settings);
     }
 
 
