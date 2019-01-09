@@ -181,48 +181,40 @@ if ( ! defined( 'ABSPATH' ) ) {
                 </tr>
 
 
-            </table>
-
-
-
-        </div>
-
-        <div class="goldContentTab" id="goldContentTabCode" style="background-color: #fff; display: none;">
-
-            <table class="wp-list-table widefat pages" cellspacing="0">
-
                 <tr>
                     <td>
-                        <b>Integration code (JavaScript)</b>
+                        <b>Other</b>
                     </td>
                     <td>
 
                     </td>
                 </tr>
 
+
+                <tr>
+                    <td>
+                        <label title="The canonical URL of your object that will be used as its permanent ID in the graph">
+                            Hide Generator Meta Tag
+                        </label>
+                    </td>
+                    <td>
+                        <select name="generatorTag">
+                            <option value="yes">Yes</option>
+                            <option value="no" <?php if (isset($settings['generatorTag']) && $settings['generatorTag']==='no') echo 'selected'; ?>>No</option>
+                        </select>
+
+                    </td>
+                </tr>
+
+
             </table>
 
+
         </div>
+
 
         <?php submit_button(); ?>
 
     </form>
 
 </div>
-
-<?php
-//var_dump($settings);
-//var_dump($_POST);
-?>
-
-<script>
-    jQuery(document).ready(function($){
-
-        jQuery('#goldTabNav a').click(function() {
-            jQuery('.goldContentTab').hide();
-            jQuery('#goldTabNav a').removeClass('nav-tab-active');
-            jQuery(this).addClass('nav-tab-active');
-            jQuery('#'+jQuery(this).data('show')).show();
-        });
-    });
-</script>

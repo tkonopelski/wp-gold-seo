@@ -3,7 +3,7 @@
  * Plugin Name: Gold SEO
  * Plugin URI: http://konopelski.info
  * Description: WP pluging for SEO meta description and Open Graph
- * Version:  1.2
+ * Version:  1.3
  * Author: Tom Konopelski
  * Author URI: http://konopelski.info
  * License: GPL2
@@ -25,7 +25,7 @@ $goldSeo = new GoldSeo();
  */
 class GoldSeo {
 
-    private $version = '1.2';
+    private $version = '1.3';
 
     private $name='Gold SEO';
 
@@ -49,6 +49,7 @@ class GoldSeo {
      */
     private $maxcontentsize = 100;
 
+
     function __construct() {
 
         add_post_type_support( 'page', 'excerpt' );
@@ -59,9 +60,7 @@ class GoldSeo {
             add_filter( "plugin_action_links_".plugin_basename( __FILE__ ), array($this, 'addSettingsLink') );
         } else {
             add_action( 'wp_head', array($this, 'setMeta'), 1 );
-            //add_action('wp_footer', array($this, 'footerDebug')); // FOR DEBUG ONLY
         }
-
     }
 
 
@@ -77,7 +76,6 @@ class GoldSeo {
 
         $settings = get_option($this->plugin_slug . '-settings');
         $this->settings = json_decode($settings, true);
-
         $this->setMaxContentSize();
 
         $description = '';
@@ -85,7 +83,7 @@ class GoldSeo {
 
             if (has_excerpt()){
                 $description = get_the_excerpt();
-                $description = $this->stripShortcodes($description);
+                $description =  $this->stripShortcodes($description);
             } else {
                 global $post;
                 $mainPost = get_post($post->ID);
@@ -110,39 +108,38 @@ class GoldSeo {
         $description = trim(preg_replace('/\s+/', ' ', $description));
 
         if (strlen($description) > 2) {
-            //echo "\n";
-            echo '<meta name="description" content="'.(esc_attr( $description)).'" />';
+            echo '<meta name="description" content="'.(esc_html( $description)).'" />';
             echo "\n";
         }
 
         # keywords
         if (isset($this->settings['metatags']) && strlen($this->settings['metatags']) > 2) {
-            echo '<meta name="keywords" content="'. esc_attr($this->settings['metatags']) .'" />';
+            echo '<meta name="keywords" content="'. esc_html($this->settings['metatags']) .'" />';
             echo "\n";
         }
 
         if (!isset($this->settings['ogtitle']) || $this->settings['ogtitle']==='yes') {
-            echo '<meta property="og:title" content="'. get_the_title() .'" />';
+            echo '<meta property="og:title" content="'. esc_html(get_the_title()) .'" />';
             echo "\n";
         }
 
         if (isset($this->settings['ogimage'][5])) {
-            echo '<meta property="og:image" content="'. trim($this->settings['ogimage']) .'" />';
+            echo '<meta property="og:image" content="'. esc_html($this->settings['ogimage']) .'" />';
             echo "\n";
         }
 
         if (isset($this->settings['oglocale'][1])) {
-            echo '<meta property="og:locale" content="'. trim($this->settings['oglocale']) .'" />';
+            echo '<meta property="og:locale" content="'. esc_html($this->settings['oglocale']) .'" />';
             echo "\n";
         }
 
         if (isset($this->settings['ogtype'][1])) {
-            echo '<meta property="og:type" content="'. trim($this->settings['ogtype']) .'" />';
+            echo '<meta property="og:type" content="'. esc_html($this->settings['ogtype']) .'" />';
             echo "\n";
         }
 
         if ((!isset($this->settings['ogdescription']) || $this->settings['ogdescription']==='yes') && strlen($description) > 2) {
-            echo '<meta property="og:description" content="'. esc_attr($description) .'" />';
+            echo '<meta property="og:description" content="'. esc_html($description) .'" />';
             echo "\n";
         }
 
@@ -151,7 +148,10 @@ class GoldSeo {
             echo '<meta property="og:url" content="'. home_url( $wp->request ) .'" />';
             echo "\n";
         }
-        //var_dump($this->settings);
+
+        if (!isset($this->settings['generatorTag']) || $this->settings['generatorTag']==='yes') {
+            remove_action('wp_head', 'wp_generator');
+        }
     }
 
 
@@ -202,16 +202,17 @@ class GoldSeo {
         if (isset($_POST['soldseoSaveSettings'])) {
 
             $save = array();
-            $save['stripmethod'] = htmlspecialchars($_POST['stripmethod']);
-            $save['usecontent'] = htmlspecialchars($_POST['usecontent']);
-            $save['maxcontentsize'] = intval( htmlspecialchars($_POST['maxcontentsize']) );
-            $save['ogtitle'] = htmlspecialchars($_POST['ogtitle']);
-            $save['ogdescription'] = htmlspecialchars($_POST['ogdescription']);
-            $save['oglocale'] = htmlspecialchars($_POST['oglocale']);
-            $save['ogurl'] = htmlspecialchars($_POST['ogimage']);
-            $save['ogimage'] = htmlspecialchars($_POST['ogimage']);
-            $save['ogtype'] = htmlspecialchars($_POST['ogtype']);
-            $save['metatags'] = htmlspecialchars($_POST['metatags']);
+            $save['stripmethod'] = sanitize_text_field($_POST['stripmethod']);
+            $save['usecontent'] = sanitize_text_field($_POST['usecontent']);
+            $save['maxcontentsize'] = intval( sanitize_text_field($_POST['maxcontentsize']) );
+            $save['ogtitle'] = sanitize_text_field($_POST['ogtitle']);
+            $save['ogdescription'] = sanitize_text_field($_POST['ogdescription']);
+            $save['oglocale'] = sanitize_text_field($_POST['oglocale']);
+            $save['ogurl'] = sanitize_text_field($_POST['ogimage']);
+            $save['ogimage'] = sanitize_text_field($_POST['ogimage']);
+            $save['ogtype'] = sanitize_text_field($_POST['ogtype']);
+            $save['metatags'] = sanitize_text_field($_POST['metatags']);
+            $save['generatorTag'] = sanitize_text_field($_POST['generatorTag']);
 
             $save = json_encode($save);
             update_option( $this->plugin_slug . '-settings', trim( $save ) );
@@ -221,13 +222,44 @@ class GoldSeo {
 
 
     /**
+     * Get settings
+     *
+     */
+    function getSettings() {
+
+        $save = array();
+        $save['stripmethod'] = '';
+        $save['usecontent'] = '';
+        $save['maxcontentsize'] = 100;
+        $save['ogtitle'] = '';
+        $save['ogdescription'] = '';
+        $save['oglocale'] = '';
+        $save['ogurl'] = '';
+        $save['ogimage'] = '';
+        $save['ogtype'] = '';
+        $save['metatags'] = '';
+        $save['generatorTag'] = '';
+
+        $settings = get_option($this->plugin_slug . '-settings');
+        $settings = json_decode($settings, true);
+
+        if (!is_array($settings)) {
+             $settings = array();
+        }
+        $settings = array_merge($save, $settings);
+
+        return $settings;
+    }
+
+
+    /**
      * Display plugin settings page
      *
      */
     function displayAdminSettings() {
 
-        $settings = get_option($this->plugin_slug . '-settings');
-        $settings = json_decode($settings, true);
+        $settings = $this->getSettings();
+
         if (!isset($settings['maxcontentsize']) || !is_numeric($settings['maxcontentsize']) || $settings['maxcontentsize'] < 1) {
             $settings['maxcontentsize'] = $this->maxcontentsize;
         }
@@ -245,6 +277,8 @@ class GoldSeo {
      * @return string
      */
     private function stripShortcodes($content) {
+
+        $content = esc_html($content);
 
         $stripmethod = 'nostrip';
         if (isset($this->settings['stripmethod'])) {
@@ -270,16 +304,6 @@ class GoldSeo {
         }
 
         return '';
-    }
-
-
-    function footerDebug() {
-        echo ' !DEBUG! <script type="text/javascript">';
-        echo 'jQuery(document).ready(function($){';
-        echo 'jQuery("#skansenTopTitle").html( jQuery("#skansenTopTitle").text() + "<hr>" + jQuery("meta[name=description]").attr("content") );';
-        echo '});';
-
-        echo '</script>';
     }
 
 }
