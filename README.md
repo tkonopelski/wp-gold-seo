@@ -1,5 +1,7 @@
 # Gold SEO
 
+[Homepage](https://tkonopelski.github.io/wp-gold-seo/)
+
 ### Welcome to the Gold SEO GitHub repository
 
 Gold SEO is a simple plugin to add meta description in the header of your WordPress blog.
@@ -36,9 +38,16 @@ After installation go to Settings > Gold SEO and check your settings.
 
 ## Changelog
 
+* 1.4 (2019.01.16)
+    + fixed og:url meta tag
+
+* 1.3 (2019.01.09)
+    + Hide Generator Meta Tag
+    + Data Sanitization/Escaping fixes
+
 * 1.2
     + Open Graph protocol support
     + minor fixes
 
 * 1.1
-	+ Initial release.
+    + Initial release.

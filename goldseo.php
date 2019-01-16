@@ -3,7 +3,7 @@
  * Plugin Name: Gold SEO
  * Plugin URI: http://konopelski.info
  * Description: WP pluging for SEO meta description and Open Graph
- * Version:  1.3
+ * Version:  1.4
  * Author: Tom Konopelski
  * Author URI: http://konopelski.info
  * License: GPL2
@@ -25,7 +25,7 @@ $goldSeo = new GoldSeo();
  */
 class GoldSeo {
 
-    private $version = '1.3';
+    private $version = '1.4';
 
     private $name='Gold SEO';
 
@@ -152,6 +152,7 @@ class GoldSeo {
         if (!isset($this->settings['generatorTag']) || $this->settings['generatorTag']==='yes') {
             remove_action('wp_head', 'wp_generator');
         }
+
     }
 
 
@@ -208,7 +209,7 @@ class GoldSeo {
             $save['ogtitle'] = sanitize_text_field($_POST['ogtitle']);
             $save['ogdescription'] = sanitize_text_field($_POST['ogdescription']);
             $save['oglocale'] = sanitize_text_field($_POST['oglocale']);
-            $save['ogurl'] = sanitize_text_field($_POST['ogimage']);
+            $save['ogurl'] = sanitize_text_field($_POST['ogurl']);
             $save['ogimage'] = sanitize_text_field($_POST['ogimage']);
             $save['ogtype'] = sanitize_text_field($_POST['ogtype']);
             $save['metatags'] = sanitize_text_field($_POST['metatags']);
